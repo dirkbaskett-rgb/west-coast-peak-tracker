@@ -58,7 +58,11 @@ const Index = () => {
     });
 
     return list;
-  }, [search, sortBy, countryFilter, conditions]);
+    // Pin favorites to top
+    const favs = list.filter((r) => favorites.has(r.id));
+    const rest = list.filter((r) => !favorites.has(r.id));
+    return [...favs, ...rest];
+  }, [search, sortBy, countryFilter, conditions, favorites]);
 
   const snowResorts = Array.from(conditions.values()).filter((c) => c.snowfall24h > 0).length;
 
