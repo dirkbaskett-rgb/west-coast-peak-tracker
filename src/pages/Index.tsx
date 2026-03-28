@@ -3,6 +3,7 @@ import { resorts, ResortMeta, LiveConditions } from "@/data/resorts";
 import { fetchAllResortConditions } from "@/lib/api";
 import { ResortCard } from "@/components/ResortCard";
 import { ResortDetail } from "@/components/ResortDetail";
+import { useFavorites } from "@/hooks/use-favorites";
 import { Search, Snowflake, SlidersHorizontal, RefreshCw, Loader2 } from "lucide-react";
 import heroImage from "@/assets/hero-mountains.jpg";
 
@@ -13,6 +14,7 @@ const Index = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("snow");
   const [countryFilter, setCountryFilter] = useState<"all" | "USA" | "Canada">("all");
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const [conditions, setConditions] = useState<Map<string, LiveConditions>>(new Map());
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -56,7 +58,11 @@ const Index = () => {
     });
 
     return list;
-  }, [search, sortBy, countryFilter, conditions]);
+    // Pin favorites to top
+    const favs = list.filter((r) => favorites.has(r.id));
+    const rest = list.filter((r) => !favorites.has(r.id));
+    return [...favs, ...rest];
+  }, [search, sortBy, countryFilter, conditions, favorites]);
 
   const snowResorts = Array.from(conditions.values()).filter((c) => c.snowfall24h > 0).length;
 
@@ -175,6 +181,8 @@ const Index = () => {
               resort={resort}
               conditions={conditions.get(resort.id)}
               onClick={setSelectedResort}
+              isFavorite={isFavorite(resort.id)}
+              onToggleFavorite={toggleFavorite}
             />
           ))}
         </div>

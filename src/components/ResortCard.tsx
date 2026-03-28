@@ -1,10 +1,12 @@
 import { ResortMeta, LiveConditions } from "@/data/resorts";
-import { Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, CloudSnow } from "lucide-react";
+import { Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, CloudSnow, Star } from "lucide-react";
 
 interface ResortCardProps {
   resort: ResortMeta;
   conditions: LiveConditions | undefined;
   onClick: (resort: ResortMeta) => void;
+  isFavorite: boolean;
+  onToggleFavorite: (id: string) => void;
 }
 
 const statusStyles = {
@@ -13,7 +15,7 @@ const statusStyles = {
   limited: "bg-warning/20 text-warning",
 };
 
-export function ResortCard({ resort, conditions, onClick }: ResortCardProps) {
+export function ResortCard({ resort, conditions, onClick, isFavorite, onToggleFavorite }: ResortCardProps) {
   const loading = !conditions;
 
   return (
@@ -23,13 +25,24 @@ export function ResortCard({ resort, conditions, onClick }: ResortCardProps) {
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-2 mb-3">
-        <div className="min-w-0">
-          <h3 className="font-display font-semibold text-foreground text-base sm:text-lg truncate">
-            {resort.name}
-          </h3>
-          <p className="text-muted-foreground text-xs mt-0.5">
-            {resort.location}, {resort.state}
-          </p>
+        <div className="flex items-start gap-2 min-w-0">
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={(e) => { e.stopPropagation(); onToggleFavorite(resort.id); }}
+            onKeyDown={(e) => { if (e.key === "Enter") { e.stopPropagation(); onToggleFavorite(resort.id); } }}
+            className="shrink-0 mt-0.5 transition-colors"
+          >
+            <Star className={`w-4 h-4 ${isFavorite ? "fill-primary text-primary" : "text-muted-foreground/40 hover:text-muted-foreground"}`} />
+          </span>
+          <div className="min-w-0">
+            <h3 className="font-display font-semibold text-foreground text-base sm:text-lg truncate">
+              {resort.name}
+            </h3>
+            <p className="text-muted-foreground text-xs mt-0.5">
+              {resort.location}, {resort.state}
+            </p>
+          </div>
         </div>
         {conditions && (
           <span className={`shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${statusStyles[conditions.status]}`}>
