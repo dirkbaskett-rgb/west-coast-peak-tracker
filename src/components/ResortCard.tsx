@@ -1,5 +1,5 @@
 import { ResortMeta, LiveConditions } from "@/data/resorts";
-import { Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, CloudSnow } from "lucide-react";
+import { Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, CloudSnow, Star } from "lucide-react";
 
 interface ResortCardProps {
   resort: ResortMeta;
