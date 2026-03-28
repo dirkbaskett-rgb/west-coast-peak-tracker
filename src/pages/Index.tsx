@@ -14,6 +14,7 @@ const Index = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("snow");
   const [countryFilter, setCountryFilter] = useState<"all" | "USA" | "Canada">("all");
+  const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const [conditions, setConditions] = useState<Map<string, LiveConditions>>(new Map());
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
