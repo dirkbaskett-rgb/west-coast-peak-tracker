@@ -1,43 +1,40 @@
-export type Resort = {
+export type ResortMeta = {
   id: string;
   name: string;
   location: string;
   state: string;
   country: string;
+  lat: number;
+  lon: number;
   elevation: { base: number; summit: number }; // feet
-  stats: {
-    lifts: { open: number; total: number };
-    runs: { open: number; total: number };
-    snowDepth: number; // inches at summit
-    newSnow24h: number; // inches
-    newSnow48h: number;
-    temperature: { base: number; summit: number }; // °F
-    wind: string;
-    conditions: string;
-  };
-  status: "open" | "closed" | "limited";
+  liftieSlug: string | null; // null = not on Liftie
   website: string;
 };
 
-export const resorts: Resort[] = [
+export type LiveConditions = {
+  temperature: number | null; // °F current
+  windSpeed: number | null; // mph
+  weatherCode: number | null;
+  snowfall24h: number; // inches
+  snowfall48h: number;
+  snowDepth: number | null; // inches - from Liftie or null
+  conditions: string;
+  lifts: { open: number; total: number } | null;
+  liftDetails: Record<string, string> | null;
+  status: "open" | "closed" | "limited";
+};
+
+export const resorts: ResortMeta[] = [
   {
     id: "alta",
     name: "Alta",
     location: "Little Cottonwood Canyon",
     state: "UT",
     country: "USA",
+    lat: 40.5888,
+    lon: -111.6380,
     elevation: { base: 8530, summit: 10550 },
-    stats: {
-      lifts: { open: 8, total: 11 },
-      runs: { open: 85, total: 116 },
-      snowDepth: 142,
-      newSnow24h: 6,
-      newSnow48h: 14,
-      temperature: { base: 28, summit: 18 },
-      wind: "SW 15-25 mph",
-      conditions: "Powder",
-    },
-    status: "open",
+    liftieSlug: "alta",
     website: "https://www.alta.com",
   },
   {
@@ -46,18 +43,10 @@ export const resorts: Resort[] = [
     location: "Little Cottonwood Canyon",
     state: "UT",
     country: "USA",
+    lat: 40.5830,
+    lon: -111.6508,
     elevation: { base: 7760, summit: 11000 },
-    stats: {
-      lifts: { open: 11, total: 13 },
-      runs: { open: 140, total: 169 },
-      snowDepth: 156,
-      newSnow24h: 8,
-      newSnow48h: 16,
-      temperature: { base: 30, summit: 16 },
-      wind: "W 20-30 mph",
-      conditions: "Powder",
-    },
-    status: "open",
+    liftieSlug: "snowbird",
     website: "https://www.snowbird.com",
   },
   {
@@ -66,18 +55,10 @@ export const resorts: Resort[] = [
     location: "Aspen",
     state: "CO",
     country: "USA",
+    lat: 39.2084,
+    lon: -106.9490,
     elevation: { base: 8104, summit: 12510 },
-    stats: {
-      lifts: { open: 18, total: 41 },
-      runs: { open: 250, total: 362 },
-      snowDepth: 78,
-      newSnow24h: 2,
-      newSnow48h: 5,
-      temperature: { base: 32, summit: 20 },
-      wind: "NW 10-15 mph",
-      conditions: "Groomed",
-    },
-    status: "open",
+    liftieSlug: "aspen-highlands",
     website: "https://www.aspensnowmass.com",
   },
   {
@@ -86,18 +67,10 @@ export const resorts: Resort[] = [
     location: "Teton Village",
     state: "WY",
     country: "USA",
+    lat: 43.5877,
+    lon: -110.8279,
     elevation: { base: 6311, summit: 10450 },
-    stats: {
-      lifts: { open: 10, total: 13 },
-      runs: { open: 95, total: 133 },
-      snowDepth: 110,
-      newSnow24h: 4,
-      newSnow48h: 9,
-      temperature: { base: 26, summit: 12 },
-      wind: "W 15-20 mph",
-      conditions: "Packed Powder",
-    },
-    status: "open",
+    liftieSlug: "jackson-hole",
     website: "https://www.jacksonhole.com",
   },
   {
@@ -106,18 +79,10 @@ export const resorts: Resort[] = [
     location: "Big Sky",
     state: "MT",
     country: "USA",
+    lat: 45.2838,
+    lon: -111.4013,
     elevation: { base: 6800, summit: 11166 },
-    stats: {
-      lifts: { open: 28, total: 39 },
-      runs: { open: 280, total: 317 },
-      snowDepth: 88,
-      newSnow24h: 3,
-      newSnow48h: 7,
-      temperature: { base: 24, summit: 10 },
-      wind: "NW 20-30 mph",
-      conditions: "Packed Powder",
-    },
-    status: "open",
+    liftieSlug: "big-sky",
     website: "https://www.bigskyresort.com",
   },
   {
@@ -126,18 +91,10 @@ export const resorts: Resort[] = [
     location: "Ketchum",
     state: "ID",
     country: "USA",
+    lat: 43.6966,
+    lon: -114.3511,
     elevation: { base: 5750, summit: 9150 },
-    stats: {
-      lifts: { open: 12, total: 18 },
-      runs: { open: 100, total: 121 },
-      snowDepth: 62,
-      newSnow24h: 0,
-      newSnow48h: 2,
-      temperature: { base: 34, summit: 22 },
-      wind: "Calm",
-      conditions: "Groomed",
-    },
-    status: "open",
+    liftieSlug: "sunvalley",
     website: "https://www.sunvalley.com",
   },
   {
@@ -146,18 +103,10 @@ export const resorts: Resort[] = [
     location: "Alta",
     state: "WY",
     country: "USA",
+    lat: 43.7903,
+    lon: -110.9576,
     elevation: { base: 7851, summit: 10230 },
-    stats: {
-      lifts: { open: 5, total: 5 },
-      runs: { open: 76, total: 79 },
-      snowDepth: 168,
-      newSnow24h: 10,
-      newSnow48h: 22,
-      temperature: { base: 22, summit: 14 },
-      wind: "SW 10-20 mph",
-      conditions: "Powder",
-    },
-    status: "open",
+    liftieSlug: "grand-targhee",
     website: "https://www.grandtarghee.com",
   },
   {
@@ -166,18 +115,10 @@ export const resorts: Resort[] = [
     location: "Huntsville",
     state: "UT",
     country: "USA",
+    lat: 41.2140,
+    lon: -111.8569,
     elevation: { base: 6391, summit: 9350 },
-    stats: {
-      lifts: { open: 9, total: 12 },
-      runs: { open: 95, total: 107 },
-      snowDepth: 98,
-      newSnow24h: 4,
-      newSnow48h: 8,
-      temperature: { base: 30, summit: 20 },
-      wind: "NW 10-15 mph",
-      conditions: "Packed Powder",
-    },
-    status: "open",
+    liftieSlug: "snowbasin",
     website: "https://www.snowbasin.com",
   },
   {
@@ -186,18 +127,10 @@ export const resorts: Resort[] = [
     location: "Taos",
     state: "NM",
     country: "USA",
+    lat: 36.5968,
+    lon: -105.4546,
     elevation: { base: 9207, summit: 12481 },
-    stats: {
-      lifts: { open: 10, total: 15 },
-      runs: { open: 90, total: 110 },
-      snowDepth: 72,
-      newSnow24h: 0,
-      newSnow48h: 3,
-      temperature: { base: 36, summit: 24 },
-      wind: "SW 5-10 mph",
-      conditions: "Groomed",
-    },
-    status: "open",
+    liftieSlug: "taos",
     website: "https://www.skitaos.com",
   },
   {
@@ -206,18 +139,10 @@ export const resorts: Resort[] = [
     location: "Norden",
     state: "CA",
     country: "USA",
+    lat: 39.3046,
+    lon: -120.3340,
     elevation: { base: 6883, summit: 8383 },
-    stats: {
-      lifts: { open: 10, total: 13 },
-      runs: { open: 90, total: 103 },
-      snowDepth: 180,
-      newSnow24h: 12,
-      newSnow48h: 24,
-      temperature: { base: 30, summit: 22 },
-      wind: "W 25-35 mph",
-      conditions: "Powder",
-    },
-    status: "open",
+    liftieSlug: "sugarbowl",
     website: "https://www.sugarbowl.com",
   },
   {
@@ -226,18 +151,10 @@ export const resorts: Resort[] = [
     location: "Banff",
     state: "AB",
     country: "Canada",
+    lat: 51.0715,
+    lon: -115.7728,
     elevation: { base: 5440, summit: 8954 },
-    stats: {
-      lifts: { open: 10, total: 12 },
-      runs: { open: 115, total: 137 },
-      snowDepth: 195,
-      newSnow24h: 5,
-      newSnow48h: 12,
-      temperature: { base: 18, summit: 5 },
-      wind: "NW 15-25 mph",
-      conditions: "Powder",
-    },
-    status: "open",
+    liftieSlug: "sunshine-village",
     website: "https://www.skibanff.com",
   },
   {
@@ -246,18 +163,10 @@ export const resorts: Resort[] = [
     location: "Lake Louise",
     state: "AB",
     country: "Canada",
+    lat: 51.4420,
+    lon: -116.1594,
     elevation: { base: 5400, summit: 8650 },
-    stats: {
-      lifts: { open: 8, total: 11 },
-      runs: { open: 120, total: 164 },
-      snowDepth: 160,
-      newSnow24h: 3,
-      newSnow48h: 8,
-      temperature: { base: 14, summit: 2 },
-      wind: "W 10-20 mph",
-      conditions: "Packed Powder",
-    },
-    status: "open",
+    liftieSlug: null,
     website: "https://www.skilouise.com",
   },
   {
@@ -266,18 +175,10 @@ export const resorts: Resort[] = [
     location: "Revelstoke",
     state: "BC",
     country: "Canada",
+    lat: 50.9576,
+    lon: -118.1649,
     elevation: { base: 1680, summit: 7300 },
-    stats: {
-      lifts: { open: 6, total: 7 },
-      runs: { open: 60, total: 69 },
-      snowDepth: 210,
-      newSnow24h: 15,
-      newSnow48h: 28,
-      temperature: { base: 32, summit: 18 },
-      wind: "SW 10-15 mph",
-      conditions: "Powder",
-    },
-    status: "open",
+    liftieSlug: null,
     website: "https://www.revelstokemountainresort.com",
   },
   {
@@ -286,18 +187,10 @@ export const resorts: Resort[] = [
     location: "Sun Peaks",
     state: "BC",
     country: "Canada",
+    lat: 50.8841,
+    lon: -119.9020,
     elevation: { base: 3960, summit: 7060 },
-    stats: {
-      lifts: { open: 10, total: 13 },
-      runs: { open: 115, total: 137 },
-      snowDepth: 130,
-      newSnow24h: 4,
-      newSnow48h: 10,
-      temperature: { base: 26, summit: 16 },
-      wind: "NW 5-10 mph",
-      conditions: "Packed Powder",
-    },
-    status: "open",
+    liftieSlug: "sun-peaks",
     website: "https://www.sunpeaksresort.com",
   },
   {
@@ -306,18 +199,10 @@ export const resorts: Resort[] = [
     location: "Panorama",
     state: "BC",
     country: "Canada",
+    lat: 50.4601,
+    lon: -116.2380,
     elevation: { base: 3800, summit: 7800 },
-    stats: {
-      lifts: { open: 8, total: 10 },
-      runs: { open: 100, total: 120 },
-      snowDepth: 145,
-      newSnow24h: 6,
-      newSnow48h: 14,
-      temperature: { base: 22, summit: 10 },
-      wind: "Calm",
-      conditions: "Powder",
-    },
-    status: "open",
+    liftieSlug: null,
     website: "https://www.panoramaresort.com",
   },
   {
@@ -326,18 +211,10 @@ export const resorts: Resort[] = [
     location: "Jasper",
     state: "AB",
     country: "Canada",
+    lat: 52.7993,
+    lon: -118.0817,
     elevation: { base: 5570, summit: 8570 },
-    stats: {
-      lifts: { open: 6, total: 7 },
-      runs: { open: 80, total: 91 },
-      snowDepth: 155,
-      newSnow24h: 7,
-      newSnow48h: 15,
-      temperature: { base: 16, summit: 4 },
-      wind: "W 10-20 mph",
-      conditions: "Powder",
-    },
-    status: "open",
+    liftieSlug: null,
     website: "https://www.skimarmot.com",
   },
 ];
