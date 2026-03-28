@@ -15,7 +15,7 @@ const statusStyles = {
   limited: "bg-warning/20 text-warning",
 };
 
-export function ResortCard({ resort, conditions, onClick }: ResortCardProps) {
+export function ResortCard({ resort, conditions, onClick, isFavorite, onToggleFavorite }: ResortCardProps) {
   const loading = !conditions;
 
   return (
