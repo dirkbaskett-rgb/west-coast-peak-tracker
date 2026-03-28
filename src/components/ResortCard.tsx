@@ -5,6 +5,8 @@ interface ResortCardProps {
   resort: ResortMeta;
   conditions: LiveConditions | undefined;
   onClick: (resort: ResortMeta) => void;
+  isFavorite: boolean;
+  onToggleFavorite: (id: string) => void;
 }
 
 const statusStyles = {
