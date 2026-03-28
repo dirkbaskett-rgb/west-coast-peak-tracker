@@ -94,4 +94,24 @@
   .card-glow:hover {
     box-shadow: var(--shadow-glow);
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Leaflet popup theming */
+.mc-map-popup .leaflet-popup-content-wrapper {
+  background: hsl(220, 18%, 13%);
+  border: 1px solid hsl(220, 15%, 20%);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 24px -4px hsl(200 80% 55% / 0.15);
+}
+.mc-map-popup .leaflet-popup-tip {
+  background: hsl(220, 18%, 13%);
+  border: 1px solid hsl(220, 15%, 20%);
 }
