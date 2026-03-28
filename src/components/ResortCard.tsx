@@ -1,9 +1,10 @@
-import { Resort } from "@/data/resorts";
-import { Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, TrendingUp } from "lucide-react";
+import { ResortMeta, LiveConditions } from "@/data/resorts";
+import { Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, CloudSnow } from "lucide-react";
 
 interface ResortCardProps {
-  resort: Resort;
-  onClick: (resort: Resort) => void;
+  resort: ResortMeta;
+  conditions: LiveConditions | undefined;
+  onClick: (resort: ResortMeta) => void;
 }
 
 const statusStyles = {
@@ -12,18 +13,8 @@ const statusStyles = {
   limited: "bg-warning/20 text-warning",
 };
 
-const conditionIcons: Record<string, string> = {
-  Powder: "❄️",
-  "Packed Powder": "🏔️",
-  Groomed: "✨",
-  "Spring Conditions": "☀️",
-  Icy: "🧊",
-};
-
-export function ResortCard({ resort, onClick }: ResortCardProps) {
-  const { stats } = resort;
-  const liftsPercent = Math.round((stats.lifts.open / stats.lifts.total) * 100);
-  const runsPercent = Math.round((stats.runs.open / stats.runs.total) * 100);
+export function ResortCard({ resort, conditions, onClick }: ResortCardProps) {
+  const loading = !conditions;
 
   return (
     <button
@@ -40,60 +31,72 @@ export function ResortCard({ resort, onClick }: ResortCardProps) {
             {resort.location}, {resort.state}
           </p>
         </div>
-        <span className={`shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${statusStyles[resort.status]}`}>
-          {resort.status}
-        </span>
+        {conditions && (
+          <span className={`shrink-0 text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full ${statusStyles[conditions.status]}`}>
+            {conditions.status}
+          </span>
+        )}
       </div>
 
-      {/* Snow highlight */}
-      {stats.newSnow24h > 0 && (
-        <div className="flex items-center gap-1.5 mb-3 px-2 py-1.5 rounded-md bg-primary/10 border border-primary/20">
-          <Snowflake className="w-3.5 h-3.5 text-primary animate-pulse-glow" />
-          <span className="text-xs font-medium text-primary">
-            {stats.newSnow24h}" new in 24h
-          </span>
-          <span className="text-[10px] text-muted-foreground ml-1">
-            ({stats.newSnow48h}" in 48h)
-          </span>
+      {loading ? (
+        <div className="space-y-2">
+          <div className="h-4 w-3/4 rounded bg-muted animate-pulse" />
+          <div className="h-4 w-1/2 rounded bg-muted animate-pulse" />
         </div>
+      ) : (
+        <>
+          {/* Snow highlight */}
+          {conditions.snowfall24h > 0 && (
+            <div className="flex items-center gap-1.5 mb-3 px-2 py-1.5 rounded-md bg-primary/10 border border-primary/20">
+              <Snowflake className="w-3.5 h-3.5 text-primary animate-pulse-glow" />
+              <span className="text-xs font-medium text-primary">
+                {conditions.snowfall24h}" new in 24h
+              </span>
+              {conditions.snowfall48h > conditions.snowfall24h && (
+                <span className="text-[10px] text-muted-foreground ml-1">
+                  ({conditions.snowfall48h}" in 48h)
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 gap-2.5 text-xs">
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+              <Thermometer className="w-3.5 h-3.5 text-primary/70" />
+              <span>{conditions.temperature != null ? `${conditions.temperature}°F` : "—"}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+              <Wind className="w-3.5 h-3.5 text-primary/70" />
+              <span>{conditions.windSpeed != null ? `${conditions.windSpeed} mph` : "—"}</span>
+            </div>
+            {conditions.lifts && (
+              <div className="flex items-center gap-1.5 text-muted-foreground col-span-2">
+                <ArrowUpCircle className="w-3.5 h-3.5 text-primary/70" />
+                <span>{conditions.lifts.open}/{conditions.lifts.total} lifts</span>
+                <div className="flex-1 h-1 rounded-full bg-secondary ml-1">
+                  <div
+                    className="h-full rounded-full bg-primary/60"
+                    style={{ width: `${conditions.lifts.total > 0 ? Math.round((conditions.lifts.open / conditions.lifts.total) * 100) : 0}%` }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-border">
+            <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
+              <Mountain className="w-3 h-3" />
+              <span>{resort.elevation.summit.toLocaleString()}'</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs">
+              <CloudSnow className="w-3 h-3 text-muted-foreground" />
+              <span className="text-muted-foreground">{conditions.conditions}</span>
+            </div>
+          </div>
+        </>
       )}
-
-      {/* Stats grid */}
-      <div className="grid grid-cols-2 gap-2.5 text-xs">
-        <div className="flex items-center gap-1.5 text-muted-foreground">
-          <Mountain className="w-3.5 h-3.5 text-primary/70" />
-          <span>{stats.snowDepth}" base</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-muted-foreground">
-          <Thermometer className="w-3.5 h-3.5 text-primary/70" />
-          <span>{stats.temperature.summit}°F summit</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-muted-foreground">
-          <ArrowUpCircle className="w-3.5 h-3.5 text-primary/70" />
-          <span>{stats.lifts.open}/{stats.lifts.total} lifts</span>
-          <div className="flex-1 h-1 rounded-full bg-secondary ml-1">
-            <div className="h-full rounded-full bg-primary/60" style={{ width: `${liftsPercent}%` }} />
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5 text-muted-foreground">
-          <TrendingUp className="w-3.5 h-3.5 text-primary/70" />
-          <span>{stats.runs.open}/{stats.runs.total} runs</span>
-          <div className="flex-1 h-1 rounded-full bg-secondary ml-1">
-            <div className="h-full rounded-full bg-primary/60" style={{ width: `${runsPercent}%` }} />
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-border">
-        <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
-          <Wind className="w-3 h-3" />
-          <span>{stats.wind}</span>
-        </div>
-        <span className="text-xs">
-          {conditionIcons[stats.conditions] || "⛷️"} {stats.conditions}
-        </span>
-      </div>
     </button>
   );
 }
