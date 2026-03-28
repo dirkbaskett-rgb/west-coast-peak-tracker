@@ -1,17 +1,41 @@
-import { useState, useMemo } from "react";
-import { resorts, Resort } from "@/data/resorts";
+import { useState, useMemo, useEffect } from "react";
+import { resorts, ResortMeta, LiveConditions } from "@/data/resorts";
+import { fetchAllResortConditions } from "@/lib/api";
 import { ResortCard } from "@/components/ResortCard";
 import { ResortDetail } from "@/components/ResortDetail";
-import { Search, Snowflake, SlidersHorizontal } from "lucide-react";
+import { Search, Snowflake, SlidersHorizontal, RefreshCw, Loader2 } from "lucide-react";
 import heroImage from "@/assets/hero-mountains.jpg";
 
-type SortOption = "name" | "snow" | "newSnow";
+type SortOption = "name" | "snow" | "temp";
 
 const Index = () => {
-  const [selectedResort, setSelectedResort] = useState<Resort | null>(null);
+  const [selectedResort, setSelectedResort] = useState<ResortMeta | null>(null);
   const [search, setSearch] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("newSnow");
+  const [sortBy, setSortBy] = useState<SortOption>("snow");
   const [countryFilter, setCountryFilter] = useState<"all" | "USA" | "Canada">("all");
+  const [conditions, setConditions] = useState<Map<string, LiveConditions>>(new Map());
+  const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+
+  const loadConditions = async () => {
+    setLoading(true);
+    try {
+      const data = await fetchAllResortConditions(resorts);
+      setConditions(data);
+      setLastUpdated(new Date());
+    } catch (err) {
+      console.error("Failed to load conditions:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadConditions();
+    // Refresh every 10 minutes
+    const interval = setInterval(loadConditions, 10 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const filtered = useMemo(() => {
     let list = resorts.filter((r) => {
@@ -22,62 +46,73 @@ const Index = () => {
       return matchSearch && matchCountry;
     });
 
-    list.sort((a, b) => {
+    list = [...list].sort((a, b) => {
+      const ca = conditions.get(a.id);
+      const cb = conditions.get(b.id);
       if (sortBy === "name") return a.name.localeCompare(b.name);
-      if (sortBy === "snow") return b.stats.snowDepth - a.stats.snowDepth;
-      return b.stats.newSnow24h - a.stats.newSnow24h;
+      if (sortBy === "snow") return (cb?.snowfall24h || 0) - (ca?.snowfall24h || 0);
+      if (sortBy === "temp") return (ca?.temperature ?? 999) - (cb?.temperature ?? 999);
+      return 0;
     });
 
     return list;
-  }, [search, sortBy, countryFilter]);
+  }, [search, sortBy, countryFilter, conditions]);
 
-  const totalNewSnow = resorts.reduce((sum, r) => sum + r.stats.newSnow24h, 0);
-  const avgNewSnow = Math.round(totalNewSnow / resorts.length);
-  const powderResorts = resorts.filter((r) => r.stats.newSnow24h >= 6).length;
+  const snowResorts = Array.from(conditions.values()).filter((c) => c.snowfall24h > 0).length;
 
   if (selectedResort) {
-    return <ResortDetail resort={selectedResort} onBack={() => setSelectedResort(null)} />;
+    return (
+      <ResortDetail
+        resort={selectedResort}
+        conditions={conditions.get(selectedResort.id)}
+        onBack={() => setSelectedResort(null)}
+      />
+    );
   }
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <div className="relative h-48 sm:h-56 overflow-hidden">
-        <img
-          src={heroImage}
-          alt="Mountain panorama"
-          className="w-full h-full object-cover"
-          width={1920}
-          height={640}
-        />
+        <img src={heroImage} alt="Mountain panorama" className="w-full h-full object-cover" width={1920} height={640} />
         <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
         <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center gap-2 mb-1">
               <Snowflake className="w-5 h-5 text-primary" />
-              <h1 className="font-display font-bold text-xl sm:text-2xl text-foreground">
-                Mountain Collective
-              </h1>
+              <h1 className="font-display font-bold text-xl sm:text-2xl text-foreground">Mountain Collective</h1>
             </div>
-            <p className="text-xs text-muted-foreground">26/27 Season • Western North America</p>
+            <p className="text-xs text-muted-foreground">26/27 Season • Western North America • Live Data</p>
           </div>
         </div>
       </div>
 
-      {/* Quick Stats */}
+      {/* Quick Stats + Refresh */}
       <div className="max-w-4xl mx-auto px-4 -mt-2">
+        <div className="flex items-center gap-2 mb-2 justify-end">
+          <button
+            onClick={loadConditions}
+            disabled={loading}
+            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors disabled:opacity-50"
+          >
+            {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
+            {lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : "Loading..."}
+          </button>
+        </div>
         <div className="grid grid-cols-3 gap-2 sm:gap-3">
           <div className="rounded-lg bg-card border border-border p-2.5 sm:p-3 text-center">
             <p className="text-lg sm:text-xl font-display font-bold text-gradient-ice">{resorts.length}</p>
             <p className="text-[10px] sm:text-xs text-muted-foreground">Resorts</p>
           </div>
           <div className="rounded-lg bg-card border border-border p-2.5 sm:p-3 text-center">
-            <p className="text-lg sm:text-xl font-display font-bold text-gradient-ice">{avgNewSnow}"</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">Avg New Snow</p>
+            <p className="text-lg sm:text-xl font-display font-bold text-gradient-ice">{snowResorts}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Reporting Snow</p>
           </div>
           <div className="rounded-lg bg-card border border-border p-2.5 sm:p-3 text-center">
-            <p className="text-lg sm:text-xl font-display font-bold text-gradient-ice">{powderResorts}</p>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">Powder Days</p>
+            <p className="text-lg sm:text-xl font-display font-bold text-gradient-ice">
+              {Array.from(conditions.values()).filter((c) => c.lifts && c.lifts.open > 0).length}
+            </p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground">Lifts Running</p>
           </div>
         </div>
       </div>
@@ -97,7 +132,6 @@ const Index = () => {
 
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           <SlidersHorizontal className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
-          {/* Country filter */}
           {(["all", "USA", "Canada"] as const).map((c) => (
             <button
               key={c}
@@ -112,10 +146,9 @@ const Index = () => {
             </button>
           ))}
           <div className="w-px h-4 bg-border shrink-0" />
-          {/* Sort */}
           {([
-            { key: "newSnow" as const, label: "Fresh Snow" },
-            { key: "snow" as const, label: "Snow Depth" },
+            { key: "snow" as const, label: "Fresh Snow" },
+            { key: "temp" as const, label: "Coldest" },
             { key: "name" as const, label: "A–Z" },
           ]).map(({ key, label }) => (
             <button
@@ -137,7 +170,12 @@ const Index = () => {
       <div className="max-w-4xl mx-auto px-4 mt-4 pb-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {filtered.map((resort) => (
-            <ResortCard key={resort.id} resort={resort} onClick={setSelectedResort} />
+            <ResortCard
+              key={resort.id}
+              resort={resort}
+              conditions={conditions.get(resort.id)}
+              onClick={setSelectedResort}
+            />
           ))}
         </div>
         {filtered.length === 0 && (
