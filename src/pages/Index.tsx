@@ -3,6 +3,7 @@ import { resorts, ResortMeta, LiveConditions } from "@/data/resorts";
 import { fetchAllResortConditions } from "@/lib/api";
 import { ResortCard } from "@/components/ResortCard";
 import { ResortDetail } from "@/components/ResortDetail";
+import { useFavorites } from "@/hooks/use-favorites";
 import { Search, Snowflake, SlidersHorizontal, RefreshCw, Loader2 } from "lucide-react";
 import heroImage from "@/assets/hero-mountains.jpg";
 
