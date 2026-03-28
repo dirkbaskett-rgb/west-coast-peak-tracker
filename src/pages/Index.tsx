@@ -181,6 +181,8 @@ const Index = () => {
               resort={resort}
               conditions={conditions.get(resort.id)}
               onClick={setSelectedResort}
+              isFavorite={isFavorite(resort.id)}
+              onToggleFavorite={toggleFavorite}
             />
           ))}
         </div>
