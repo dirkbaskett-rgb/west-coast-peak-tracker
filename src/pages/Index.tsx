@@ -115,7 +115,7 @@ const Index = () => {
                   <Snowflake className="w-5 h-5 text-primary" />
                   <h1 className="font-display font-bold text-xl sm:text-2xl text-foreground">Mountain Collective</h1>
                 </div>
-                <p className="text-xs text-muted-foreground">26/27 Season • Western North America • Live Data</p>
+                <p className="text-xs text-muted-foreground">26/27 Season • North America • Live Data</p>
               </div>
             </div>
           </div>
