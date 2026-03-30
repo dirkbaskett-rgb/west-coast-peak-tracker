@@ -1,6 +1,7 @@
 import { ResortMeta, LiveConditions } from "@/data/resorts";
 import { ArrowLeft, ExternalLink, Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, CloudSnow, Ruler } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SnowForecastChart } from "@/components/SnowForecastChart";
 
 interface ResortDetailProps {
   resort: ResortMeta;
@@ -64,6 +65,9 @@ export function ResortDetail({ resort, conditions, onBack }: ResortDetailProps) 
                 <Stat icon={<CloudSnow className="w-4 h-4" />} label="Conditions" value={conditions.conditions} />
               </div>
             </section>
+
+            {/* Snow Forecast Chart */}
+            <SnowForecastChart resort={resort} />
 
             {/* Lift Status */}
             {conditions.lifts && (
