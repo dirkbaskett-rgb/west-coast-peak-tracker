@@ -151,6 +151,11 @@ const Index = () => {
             </div>
           </div>
 
+          {/* Powder Alerts */}
+          <div className="max-w-4xl mx-auto px-4 mt-3">
+            <PowderAlert resorts={resorts} conditions={conditions} onSelectResort={setSelectedResort} />
+          </div>
+
           {/* Filters */}
           <div className="max-w-4xl mx-auto px-4 mt-4 space-y-3">
             <div className="relative">
