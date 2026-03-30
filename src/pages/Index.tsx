@@ -4,6 +4,7 @@ import { fetchAllResortConditions } from "@/lib/api";
 import { ResortCard } from "@/components/ResortCard";
 import { ResortDetail } from "@/components/ResortDetail";
 import { ResortMap } from "@/components/ResortMap";
+import { PowderAlert } from "@/components/PowderAlert";
 import { useFavorites } from "@/hooks/use-favorites";
 import { Search, Snowflake, SlidersHorizontal, RefreshCw, Loader2, Map as MapIcon, List } from "lucide-react";
 import heroImage from "@/assets/hero-mountains.jpg";
@@ -148,6 +149,11 @@ const Index = () => {
                 <p className="text-[10px] sm:text-xs text-muted-foreground">Lifts Running</p>
               </div>
             </div>
+          </div>
+
+          {/* Powder Alerts */}
+          <div className="max-w-4xl mx-auto px-4 mt-3">
+            <PowderAlert resorts={resorts} conditions={conditions} onSelectResort={setSelectedResort} />
           </div>
 
           {/* Filters */}
