@@ -1,21 +1,28 @@
 {
-  "name": "Mountain Collective Tracker",
+  "name": "MC Tracker – Mountain Collective",
   "short_name": "MC Tracker",
-  "description": "Track ski resort conditions for Mountain Collective 26/27 western North American resorts",
+  "description": "Track snow, weather, lifts and conditions for Mountain Collective 26/27 ski resorts",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#161b26",
-  "theme_color": "#2da4e0",
+  "theme_color": "#161b26",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "/placeholder.svg",
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/png"
     },
     {
-      "src": "/placeholder.svg",
+      "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
