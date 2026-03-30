@@ -66,6 +66,9 @@ export function ResortDetail({ resort, conditions, onBack }: ResortDetailProps) 
               </div>
             </section>
 
+            {/* Snow Forecast Chart */}
+            <SnowForecastChart resort={resort} />
+
             {/* Lift Status */}
             {conditions.lifts && (
               <section className="rounded-lg bg-card border border-border p-4">
