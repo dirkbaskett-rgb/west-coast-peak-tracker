@@ -75,12 +75,13 @@ async function fetchOpenMeteo(lat: number, lon: number, summitFt: number): Promi
   }
 }
 
-function calcSnowfall(hourly: OpenMeteoResponse["hourly"]): { snow24h: number; snow48h: number } {
-  if (!hourly?.time || !hourly?.snowfall) return { snow24h: 0, snow48h: 0 };
+function calcSnowfall(hourly: OpenMeteoResponse["hourly"]): { snow24h: number; snow48h: number; snow72h: number } {
+  if (!hourly?.time || !hourly?.snowfall) return { snow24h: 0, snow48h: 0, snow72h: 0 };
 
   const now = new Date();
   let snow24h = 0;
   let snow48h = 0;
+  let snow72h = 0;
 
   for (let i = 0; i < hourly.time.length; i++) {
     const t = new Date(hourly.time[i]);
@@ -88,11 +89,13 @@ function calcSnowfall(hourly: OpenMeteoResponse["hourly"]): { snow24h: number; s
     const sf = hourly.snowfall[i] || 0;
     if (hoursAgo >= 0 && hoursAgo <= 24) snow24h += sf;
     if (hoursAgo >= 0 && hoursAgo <= 48) snow48h += sf;
+    if (hoursAgo >= 0 && hoursAgo <= 72) snow72h += sf;
   }
 
   return {
     snow24h: cmToInches(snow24h),
     snow48h: cmToInches(snow48h),
+    snow72h: cmToInches(snow72h),
   };
 }
 
