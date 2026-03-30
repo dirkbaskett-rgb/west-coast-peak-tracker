@@ -2,7 +2,6 @@ import { ResortMeta, LiveConditions } from "@/data/resorts";
 import { ArrowLeft, ExternalLink, Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, CloudSnow, Ruler } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SnowForecastChart } from "@/components/SnowForecastChart";
-import { Button } from "@/components/ui/button";
 
 interface ResortDetailProps {
   resort: ResortMeta;
