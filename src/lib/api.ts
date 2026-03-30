@@ -66,7 +66,7 @@ async function fetchLiftie(slug: string): Promise<LiftieResponse | null> {
 async function fetchOpenMeteo(lat: number, lon: number, summitFt: number): Promise<OpenMeteoResponse | null> {
   try {
     const elev = feetToMeters(summitFt);
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=${elev}&current=temperature_2m,wind_speed_10m,weather_code,snowfall&hourly=snowfall&forecast_days=2&past_days=2&temperature_unit=celsius&wind_speed_unit=kmh&precipitation_unit=mm`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=${elev}&current=temperature_2m,wind_speed_10m,weather_code,snowfall&hourly=snowfall&forecast_days=2&past_days=3&temperature_unit=celsius&wind_speed_unit=kmh&precipitation_unit=mm`;
     const res = await fetch(url);
     if (!res.ok) return null;
     return await res.json();
