@@ -121,7 +121,7 @@ const Index = () => {
           </div>
 
           {/* Quick Stats + Refresh */}
-          <div className="max-w-4xl mx-auto px-4 -mt-2">
+          <div className="max-w-4xl mx-auto px-4 mt-2">
             <div className="flex items-center gap-2 mb-2 justify-end">
               <button
                 onClick={loadConditions}
