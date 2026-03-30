@@ -17,6 +17,7 @@ export type LiveConditions = {
   weatherCode: number | null;
   snowfall24h: number; // inches
   snowfall48h: number;
+  snowfall72h: number;
   snowDepth: number | null; // inches - from Liftie or null
   conditions: string;
   lifts: { open: number; total: number } | null;

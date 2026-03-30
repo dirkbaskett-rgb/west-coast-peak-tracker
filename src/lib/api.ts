@@ -131,6 +131,7 @@ export async function fetchResortConditions(resort: ResortMeta): Promise<LiveCon
     weatherCode,
     snowfall24h: snow24h,
     snowfall48h: snow48h,
+    snowfall72h: snow72h,
     snowDepth: null, // no free API for snow depth
     conditions,
     lifts: liftie ? { open: openLifts, total: totalLifts } : null,
