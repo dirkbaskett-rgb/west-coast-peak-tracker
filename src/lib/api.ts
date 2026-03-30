@@ -105,7 +105,7 @@ export async function fetchResortConditions(resort: ResortMeta): Promise<LiveCon
     fetchOpenMeteo(resort.lat, resort.lon, resort.elevation.summit),
   ]);
 
-  const { snow24h, snow48h } = calcSnowfall(weather?.hourly);
+  const { snow24h, snow48h, snow72h } = calcSnowfall(weather?.hourly);
 
   const liftStats = liftie?.lifts?.stats;
   const totalLifts = liftStats
