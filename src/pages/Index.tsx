@@ -6,8 +6,9 @@ import { ResortDetail } from "@/components/ResortDetail";
 import { ResortMap } from "@/components/ResortMap";
 import { PowderAlert } from "@/components/PowderAlert";
 import { useFavorites } from "@/hooks/use-favorites";
-import { Search, Snowflake, SlidersHorizontal, RefreshCw, Loader2, Map as MapIcon, List } from "lucide-react";
+import { Search, Snowflake, SlidersHorizontal, RefreshCw, Loader2, Map as MapIcon, List, Car } from "lucide-react";
 import heroImage from "@/assets/hero-mountains.jpg";
+import { TripPlanner } from "@/components/TripPlanner";
 
 type SortOption = "name" | "snow" | "temp";
 
