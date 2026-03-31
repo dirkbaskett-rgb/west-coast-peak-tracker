@@ -21,7 +21,7 @@ const Index = () => {
   const [conditions, setConditions] = useState<Map<string, LiveConditions>>(new Map());
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [activePanel, setActivePanel] = useState<0 | 1>(0);
+  const [activePanel, setActivePanel] = useState<0 | 1 | 2>(1); // 0=trips, 1=list, 2=map
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const loadConditions = async () => {
