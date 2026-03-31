@@ -249,21 +249,39 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Floating toggle button */}
-      <button
-        onClick={() => scrollToPanel(activePanel === 0 ? 1 : 0)}
-        className="fixed right-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
-      >
-        {activePanel === 0 ? (
-          <>
+      {/* Floating toggle buttons */}
+      {activePanel === 1 && (
+        <>
+          <button
+            onClick={() => scrollToPanel(0)}
+            className="fixed left-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
+            <Car className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => scrollToPanel(2)}
+            className="fixed right-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
             <MapIcon className="w-4 h-4" />
-          </>
-        ) : (
-          <>
-            <List className="w-4 h-4" />
-          </>
-        )}
-      </button>
+          </button>
+        </>
+      )}
+      {activePanel === 0 && (
+        <button
+          onClick={() => scrollToPanel(1)}
+          className="fixed right-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          <List className="w-4 h-4" />
+        </button>
+      )}
+      {activePanel === 2 && (
+        <button
+          onClick={() => scrollToPanel(1)}
+          className="fixed left-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          <List className="w-4 h-4" />
+        </button>
+      )}
     </div>
   );
 };
