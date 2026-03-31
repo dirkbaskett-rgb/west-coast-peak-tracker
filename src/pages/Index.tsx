@@ -63,7 +63,7 @@ const Index = () => {
     if (el) el.scrollLeft = el.clientWidth;
   }, []);
 
-  const scrollToPanel = useCallback((panel: 0 | 1) => {
+  const scrollToPanel = useCallback((panel: 0 | 1 | 2) => {
     const el = scrollContainerRef.current;
     if (!el) return;
     el.scrollTo({ left: panel * el.clientWidth, behavior: "smooth" });
