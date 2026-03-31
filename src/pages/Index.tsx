@@ -6,8 +6,9 @@ import { ResortDetail } from "@/components/ResortDetail";
 import { ResortMap } from "@/components/ResortMap";
 import { PowderAlert } from "@/components/PowderAlert";
 import { useFavorites } from "@/hooks/use-favorites";
-import { Search, Snowflake, SlidersHorizontal, RefreshCw, Loader2, Map as MapIcon, List } from "lucide-react";
+import { Search, Snowflake, SlidersHorizontal, RefreshCw, Loader2, Map as MapIcon, List, Car } from "lucide-react";
 import heroImage from "@/assets/hero-mountains.jpg";
+import { TripPlanner } from "@/components/TripPlanner";
 
 type SortOption = "name" | "snow" | "temp";
 
@@ -20,7 +21,7 @@ const Index = () => {
   const [conditions, setConditions] = useState<Map<string, LiveConditions>>(new Map());
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [activePanel, setActivePanel] = useState<0 | 1>(0);
+  const [activePanel, setActivePanel] = useState<0 | 1 | 2>(1); // 0=trips, 1=list, 2=map
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const loadConditions = async () => {
@@ -42,19 +43,27 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Scroll snap observer
+  // Scroll snap observer for 3 panels
   useEffect(() => {
     const el = scrollContainerRef.current;
     if (!el) return;
     const onScroll = () => {
       const ratio = el.scrollLeft / el.clientWidth;
-      setActivePanel(ratio > 0.5 ? 1 : 0);
+      if (ratio < 0.5) setActivePanel(0);
+      else if (ratio < 1.5) setActivePanel(1);
+      else setActivePanel(2);
     };
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollToPanel = useCallback((panel: 0 | 1) => {
+  // Start on panel 1 (list) on mount
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (el) el.scrollLeft = el.clientWidth;
+  }, []);
+
+  const scrollToPanel = useCallback((panel: 0 | 1 | 2) => {
     const el = scrollContainerRef.current;
     if (!el) return;
     el.scrollTo({ left: panel * el.clientWidth, behavior: "smooth" });
@@ -104,6 +113,11 @@ const Index = () => {
         className="flex-1 flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
         style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
       >
+        {/* Panel 0: Trip Planner */}
+        <div className="w-full shrink-0 snap-center overflow-y-auto" style={{ scrollSnapAlign: "center" }}>
+          <TripPlanner onSelectResort={setSelectedResort} />
+        </div>
+
         {/* Panel 1: List View */}
         <div className="w-full shrink-0 snap-center overflow-y-auto" style={{ scrollSnapAlign: "center" }}>
           {/* Hero */}
@@ -235,21 +249,39 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Floating toggle button */}
-      <button
-        onClick={() => scrollToPanel(activePanel === 0 ? 1 : 0)}
-        className="fixed right-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
-      >
-        {activePanel === 0 ? (
-          <>
+      {/* Floating toggle buttons */}
+      {activePanel === 1 && (
+        <>
+          <button
+            onClick={() => scrollToPanel(0)}
+            className="fixed left-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
+            <Car className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => scrollToPanel(2)}
+            className="fixed right-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
             <MapIcon className="w-4 h-4" />
-          </>
-        ) : (
-          <>
-            <List className="w-4 h-4" />
-          </>
-        )}
-      </button>
+          </button>
+        </>
+      )}
+      {activePanel === 0 && (
+        <button
+          onClick={() => scrollToPanel(1)}
+          className="fixed right-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          <List className="w-4 h-4" />
+        </button>
+      )}
+      {activePanel === 2 && (
+        <button
+          onClick={() => scrollToPanel(1)}
+          className="fixed left-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          <List className="w-4 h-4" />
+        </button>
+      )}
     </div>
   );
 };
