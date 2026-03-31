@@ -235,31 +235,21 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Bottom nav bar */}
-      <div className="shrink-0 flex items-center justify-center gap-1 py-2 bg-card border-t border-border">
-        <button
-          onClick={() => scrollToPanel(0)}
-          className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
-            activePanel === 0
-              ? "bg-primary/15 text-primary"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <List className="w-3.5 h-3.5" />
-          List
-        </button>
-        <button
-          onClick={() => scrollToPanel(1)}
-          className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
-            activePanel === 1
-              ? "bg-primary/15 text-primary"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          <MapIcon className="w-3.5 h-3.5" />
-          Map
-        </button>
-      </div>
+      {/* Floating toggle button */}
+      <button
+        onClick={() => scrollToPanel(activePanel === 0 ? 1 : 0)}
+        className="fixed right-4 top-1/2 -translate-y-1/2 z-30 flex items-center gap-1.5 px-3 py-2.5 rounded-full bg-card border border-border shadow-lg text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+      >
+        {activePanel === 0 ? (
+          <>
+            <MapIcon className="w-4 h-4" />
+          </>
+        ) : (
+          <>
+            <List className="w-4 h-4" />
+          </>
+        )}
+      </button>
     </div>
   );
 };
