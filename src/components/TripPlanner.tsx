@@ -1,3 +1,4 @@
+import { useState, useRef } from "react";
 import { MapPin, Clock, Hotel, Car, Mountain, ChevronRight } from "lucide-react";
 import { ResortMeta } from "@/data/resorts";
 import { resorts } from "@/data/resorts";
@@ -177,15 +178,23 @@ interface TripPlannerProps {
 }
 
 export const TripPlanner = ({ onSelectResort }: TripPlannerProps) => {
+  const [activeTripId, setActiveTripId] = useState<string | null>(null);
+  const tripRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
   const handleResortClick = (resortId: string) => {
     const resort = resorts.find((r) => r.id === resortId);
     if (resort && onSelectResort) onSelectResort(resort);
   };
 
+  const scrollToTrip = (id: string) => {
+    setActiveTripId(id);
+    tripRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className="h-full overflow-y-auto">
       <div className="max-w-2xl mx-auto px-4 py-6">
-        <div className="mb-6">
+        <div className="mb-4">
           <div className="flex items-center gap-2 mb-1">
             <Car className="w-5 h-5 text-primary" />
             <h2 className="font-display font-bold text-xl text-foreground">Trip Planner</h2>
@@ -193,9 +202,26 @@ export const TripPlanner = ({ onSelectResort }: TripPlannerProps) => {
           <p className="text-xs text-muted-foreground">Pre-built road trip itineraries with driving times & lodging</p>
         </div>
 
+        {/* Quick-jump tags */}
+        <div className="flex flex-wrap gap-2 mb-5">
+          {recommendedTrips.map((trip) => (
+            <button
+              key={trip.id}
+              onClick={() => scrollToTrip(trip.id)}
+              className={`text-xs px-3 py-2 rounded-lg border font-medium transition-colors ${
+                activeTripId === trip.id
+                  ? "bg-primary/15 border-primary/40 text-primary"
+                  : "bg-card border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground"
+              }`}
+            >
+              {trip.title}
+            </button>
+          ))}
+        </div>
+
         <div className="space-y-6">
           {recommendedTrips.map((trip) => (
-            <div key={trip.id} className="rounded-xl bg-card border border-border overflow-hidden">
+            <div key={trip.id} ref={(el) => { tripRefs.current[trip.id] = el; }} className="rounded-xl bg-card border border-border overflow-hidden">
               {/* Trip Header */}
               <div className="p-4 border-b border-border bg-secondary/30">
                 <h3 className="font-display font-bold text-lg text-foreground">{trip.title}</h3>
