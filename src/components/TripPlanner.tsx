@@ -123,6 +123,53 @@ const recommendedTrips: Trip[] = [
       },
     ],
   },
+  {
+    id: "idaho-wyoming-montana",
+    title: "Idaho → Wyoming → Montana Loop",
+    subtitle: "Boise → Sun Valley → Grand Targhee → Jackson Hole → Big Sky",
+    duration: "7–10 days",
+    bestFor: "Uncrowded powder, big mountains, road trip vibes",
+    stops: [
+      {
+        name: "Boise",
+        type: "city",
+        description: "Fly into BOI. Affordable flights, great food scene. Stock up and head east on US-20.",
+        stayOptions: ["Downtown Boise hotels", "Airport-area hotels for early starts"],
+      },
+      {
+        name: "Sun Valley",
+        resortId: "sun-valley",
+        type: "resort",
+        description: "America's first destination ski resort. 3,400' vertical, perfectly groomed corduroy and challenging bowls on Baldy. Warm-spring base lodge is iconic.",
+        stayOptions: ["Sun Valley Lodge (historic)", "Limelight Hotel Ketchum", "Ketchum Airbnbs"],
+        driveFromPrev: "2 hr 30 min from Boise via US-20",
+      },
+      {
+        name: "Grand Targhee",
+        resortId: "grand-targhee",
+        type: "resort",
+        description: "\"The other side\" of the Tetons. Averages 500\" of snow annually. Famously uncrowded with incredible tree skiing and Teton views.",
+        stayOptions: ["Targhee Lodge (slopeside)", "Driggs/Victor town lodging (12 mi)"],
+        driveFromPrev: "3 hr 30 min via ID-75 S → US-26 E",
+      },
+      {
+        name: "Jackson Hole",
+        resortId: "jackson-hole",
+        type: "resort",
+        description: "World-class expert terrain. Corbet's Couloir, 4,139' continuous vertical, and a legendary après scene in Teton Village and Jackson town.",
+        stayOptions: ["Four Seasons Teton Village", "Hotel Terra", "Jackson town Airbnbs (15 min)"],
+        driveFromPrev: "1 hr 30 min via Teton Pass (or 1 hr via ID-33 in summer)",
+      },
+      {
+        name: "Big Sky",
+        resortId: "big-sky",
+        type: "resort",
+        description: "Biggest skiing in America — 5,800 acres. Lone Mountain tram accesses extreme terrain; lower mountain has endless groomers. Rarely crowded.",
+        stayOptions: ["Summit Hotel (ski-in/ski-out)", "Huntley Lodge", "Big Sky town vacation rentals"],
+        driveFromPrev: "4 hr 30 min via US-191 N through Yellowstone corridor",
+      },
+    ],
+  },
 ];
 
 interface TripPlannerProps {
