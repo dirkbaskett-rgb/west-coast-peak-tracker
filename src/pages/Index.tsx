@@ -113,6 +113,11 @@ const Index = () => {
         className="flex-1 flex overflow-x-auto snap-x snap-mandatory scrollbar-hide"
         style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
       >
+        {/* Panel 0: Trip Planner */}
+        <div className="w-full shrink-0 snap-center overflow-y-auto" style={{ scrollSnapAlign: "center" }}>
+          <TripPlanner onSelectResort={setSelectedResort} />
+        </div>
+
         {/* Panel 1: List View */}
         <div className="w-full shrink-0 snap-center overflow-y-auto" style={{ scrollSnapAlign: "center" }}>
           {/* Hero */}
