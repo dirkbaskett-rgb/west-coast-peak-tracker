@@ -43,16 +43,24 @@ const Index = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Scroll snap observer
+  // Scroll snap observer for 3 panels
   useEffect(() => {
     const el = scrollContainerRef.current;
     if (!el) return;
     const onScroll = () => {
       const ratio = el.scrollLeft / el.clientWidth;
-      setActivePanel(ratio > 0.5 ? 1 : 0);
+      if (ratio < 0.5) setActivePanel(0);
+      else if (ratio < 1.5) setActivePanel(1);
+      else setActivePanel(2);
     };
     el.addEventListener("scroll", onScroll, { passive: true });
     return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Start on panel 1 (list) on mount
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (el) el.scrollLeft = el.clientWidth;
   }, []);
 
   const scrollToPanel = useCallback((panel: 0 | 1) => {
