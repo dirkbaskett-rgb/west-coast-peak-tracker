@@ -1,3 +1,4 @@
+import { useState, useRef } from "react";
 import { MapPin, Clock, Hotel, Car, Mountain, ChevronRight } from "lucide-react";
 import { ResortMeta } from "@/data/resorts";
 import { resorts } from "@/data/resorts";
