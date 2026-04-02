@@ -10,10 +10,10 @@ interface ResortMapProps {
 }
 
 function snowColor(inches: number): string {
-  if (inches >= 12) return "hsl(200, 80%, 55%)";   // primary / deep powder
-  if (inches >= 6) return "hsl(195, 90%, 65%)";    // ice-glow
-  if (inches >= 1) return "hsl(160, 50%, 45%)";    // alpine green
-  if (inches > 0) return "hsl(35, 90%, 55%)";      // warning / trace
+  if (inches >= 12) return "hsl(210, 80%, 35%)";   // dark blue
+  if (inches >= 6) return "hsl(210, 70%, 50%)";    // blue
+  if (inches >= 1) return "hsl(210, 60%, 70%)";    // light blue
+  if (inches > 0) return "hsl(0, 0%, 92%)";        // white / trace
   return "hsl(215, 15%, 40%)";                      // muted - no snow
 }
 
@@ -59,7 +59,7 @@ export function ResortMap({ resorts, conditions, onSelectResort }: ResortMapProp
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
       maxZoom: 13,
       minZoom: 4,
     }).addTo(map);
@@ -130,10 +130,10 @@ export function ResortMap({ resorts, conditions, onSelectResort }: ResortMapProp
   }, [resorts, onSelectResort]);
 
   const legendItems = [
-    { label: '12"+', color: "hsl(200, 80%, 55%)" },
-    { label: '6-12"', color: "hsl(195, 90%, 65%)" },
-    { label: '1-6"', color: "hsl(160, 50%, 45%)" },
-    { label: "Trace", color: "hsl(35, 90%, 55%)" },
+    { label: '12"+', color: "hsl(210, 80%, 35%)" },
+    { label: '6-12"', color: "hsl(210, 70%, 50%)" },
+    { label: '1-6"', color: "hsl(210, 60%, 70%)" },
+    { label: "Trace", color: "hsl(0, 0%, 92%)" },
     { label: "None", color: "hsl(215, 15%, 40%)" },
   ];
 
