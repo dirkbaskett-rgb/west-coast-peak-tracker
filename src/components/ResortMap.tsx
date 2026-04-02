@@ -144,16 +144,16 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
 
       {/* Navigation tabs */}
       {onNavigate && (
-        <div className="absolute top-3 right-3 z-[1000] flex gap-2">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] flex gap-3">
           <button
             onClick={() => onNavigate(1)}
-            className="px-4 py-2.5 rounded-lg bg-card/90 backdrop-blur-sm border border-border text-sm font-medium text-foreground/80 hover:text-primary hover:border-primary/40 transition-colors"
+            className="px-6 py-3.5 rounded-lg bg-card/90 backdrop-blur-sm border border-border text-base font-medium text-foreground/80 hover:text-primary hover:border-primary/40 transition-colors"
           >
             Resorts
           </button>
           <button
             onClick={() => onNavigate(0)}
-            className="px-4 py-2.5 rounded-lg bg-card/90 backdrop-blur-sm border border-border text-sm font-medium text-foreground/80 hover:text-primary hover:border-primary/40 transition-colors"
+            className="px-6 py-3.5 rounded-lg bg-card/90 backdrop-blur-sm border border-border text-base font-medium text-foreground/80 hover:text-primary hover:border-primary/40 transition-colors"
           >
             Trip Planner
           </button>
