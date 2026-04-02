@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { ResortMeta, LiveConditions } from "@/data/resorts";
+import { AvalancheZone, fetchAvalancheForecast, DANGER_LABELS, DANGER_COLORS } from "@/lib/avalanche";
 
 interface ResortMapProps {
   resorts: ResortMeta[];
@@ -11,19 +12,11 @@ interface ResortMapProps {
 }
 
 function snowColor(inches: number): string {
-  if (inches >= 12) return "hsl(210, 80%, 35%)";   // dark blue
-  if (inches >= 6) return "hsl(210, 70%, 50%)";    // blue
-  if (inches >= 1) return "hsl(210, 60%, 70%)";    // light blue
-  if (inches > 0) return "hsl(0, 0%, 92%)";        // white / trace
-  return "hsl(215, 15%, 40%)";                      // muted - no snow
-}
-
-function snowLabel(inches: number): string {
-  if (inches >= 12) return "12\"+ DEEP POWDER";
-  if (inches >= 6) return "6-12\" POWDER";
-  if (inches >= 1) return "1-6\" FRESH";
-  if (inches > 0) return "< 1\" TRACE";
-  return "NO NEW SNOW";
+  if (inches >= 12) return "hsl(210, 80%, 35%)";
+  if (inches >= 6) return "hsl(210, 70%, 50%)";
+  if (inches >= 1) return "hsl(210, 60%, 70%)";
+  if (inches > 0) return "hsl(0, 0%, 92%)";
+  return "hsl(215, 15%, 40%)";
 }
 
 function createMarkerIcon(color: string, size: number = 12) {
@@ -47,7 +40,12 @@ function createMarkerIcon(color: string, size: number = 12) {
 export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: ResortMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<L.Map | null>(null);
+  const avalancheLayerRef = useRef<L.LayerGroup | null>(null);
+  const [showAvalanche, setShowAvalanche] = useState(false);
+  const [avalancheZones, setAvalancheZones] = useState<AvalancheZone[]>([]);
+  const [avalancheLoading, setAvalancheLoading] = useState(false);
 
+  // Init map
   useEffect(() => {
     if (!mapRef.current || mapInstance.current) return;
 
@@ -65,6 +63,8 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
       minZoom: 4,
     }).addTo(map);
 
+    avalancheLayerRef.current = L.layerGroup().addTo(map);
+
     mapInstance.current = map;
 
     return () => {
@@ -73,11 +73,59 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
     };
   }, []);
 
+  // Fetch avalanche data on first toggle
+  useEffect(() => {
+    if (showAvalanche && avalancheZones.length === 0 && !avalancheLoading) {
+      setAvalancheLoading(true);
+      fetchAvalancheForecast().then((zones) => {
+        setAvalancheZones(zones);
+        setAvalancheLoading(false);
+      });
+    }
+  }, [showAvalanche, avalancheZones.length, avalancheLoading]);
+
+  // Render avalanche overlay
+  useEffect(() => {
+    const layer = avalancheLayerRef.current;
+    if (!layer) return;
+    layer.clearLayers();
+
+    if (!showAvalanche || avalancheZones.length === 0) return;
+
+    avalancheZones.forEach((zone) => {
+      const geoJson = L.geoJSON(zone.geometry as any, {
+        style: {
+          fillColor: zone.color,
+          fillOpacity: 0.35,
+          color: zone.stroke,
+          weight: 1.5,
+          opacity: 0.7,
+        },
+      });
+
+      geoJson.bindPopup(`
+        <div style="font-family: 'Space Grotesk', sans-serif; min-width: 180px;">
+          <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">${zone.name}</div>
+          <div style="font-size: 12px; color: #666; margin-bottom: 8px;">${zone.center}</div>
+          <div style="display: inline-block; padding: 3px 10px; border-radius: 4px; background: ${zone.color}; color: ${zone.fontColor}; font-weight: 600; font-size: 13px; margin-bottom: 6px;">
+            ${zone.danger.toUpperCase()} (${zone.dangerLevel >= 0 ? zone.dangerLevel : "—"})
+          </div>
+          ${zone.travelAdvice ? `<div style="font-size: 11px; color: #555; margin-top: 6px; line-height: 1.4;">${zone.travelAdvice}</div>` : ""}
+          <div style="margin-top: 8px;">
+            <a href="${zone.link}" target="_blank" rel="noopener" style="font-size: 11px; color: hsl(200, 80%, 45%); text-decoration: none;">Full forecast →</a>
+          </div>
+        </div>
+      `, { maxWidth: 280 });
+
+      geoJson.addTo(layer);
+    });
+  }, [showAvalanche, avalancheZones]);
+
+  // Resort markers
   useEffect(() => {
     const map = mapInstance.current;
     if (!map) return;
 
-    // Clear existing markers
     map.eachLayer((layer) => {
       if (layer instanceof L.Marker) map.removeLayer(layer);
     });
@@ -116,7 +164,7 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
     });
   }, [resorts, conditions, onSelectResort]);
 
-  // Handle "View details" clicks inside popups
+  // Handle popup detail clicks
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -136,6 +184,14 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
     { label: '1-6"', color: "hsl(210, 60%, 70%)" },
     { label: "Trace", color: "hsl(0, 0%, 92%)" },
     { label: "None", color: "hsl(215, 15%, 40%)" },
+  ];
+
+  const avalancheLegend = [
+    { level: 5, label: "Extreme", color: DANGER_COLORS[5] },
+    { level: 4, label: "High", color: DANGER_COLORS[4] },
+    { level: 3, label: "Considerable", color: DANGER_COLORS[3] },
+    { level: 2, label: "Moderate", color: DANGER_COLORS[2] },
+    { level: 1, label: "Low", color: DANGER_COLORS[1] },
   ];
 
   return (
@@ -160,7 +216,7 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
         </div>
       )}
 
-      {/* Legend */}
+      {/* Snowfall Legend */}
       <div className="absolute top-3 left-3 z-[1000] rounded-lg bg-card/90 backdrop-blur-sm border border-border p-4">
         <p className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2.5">24h Snowfall</p>
         <div className="space-y-1.5">
@@ -174,6 +230,37 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Avalanche toggle + legend */}
+      <div className="absolute bottom-8 left-3 z-[1000] rounded-lg bg-card/90 backdrop-blur-sm border border-border p-4">
+        <button
+          onClick={() => setShowAvalanche(!showAvalanche)}
+          className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider mb-1 transition-colors ${
+            showAvalanche ? "text-destructive" : "text-foreground"
+          }`}
+        >
+          <span className={`w-3 h-3 rounded-sm border-2 transition-colors ${
+            showAvalanche ? "bg-destructive border-destructive" : "border-foreground/40"
+          }`} />
+          Avalanche Forecast
+        </button>
+        {avalancheLoading && (
+          <p className="text-xs text-muted-foreground mt-1">Loading...</p>
+        )}
+        {showAvalanche && !avalancheLoading && (
+          <div className="space-y-1.5 mt-2">
+            {avalancheLegend.map(({ label, color }) => (
+              <div key={label} className="flex items-center gap-2.5">
+                <span
+                  className="w-4 h-4 rounded shrink-0"
+                  style={{ background: color, opacity: 0.7 }}
+                />
+                <span className="text-sm text-foreground/80">{label}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
