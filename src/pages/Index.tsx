@@ -245,6 +245,7 @@ const Index = () => {
             resorts={resorts}
             conditions={conditions}
             onSelectResort={setSelectedResort}
+            onNavigate={scrollToPanel}
           />
         </div>
       </div>
