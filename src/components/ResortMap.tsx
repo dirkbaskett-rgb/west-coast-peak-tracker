@@ -142,16 +142,16 @@ export function ResortMap({ resorts, conditions, onSelectResort }: ResortMapProp
       <div ref={mapRef} className="absolute inset-0" />
 
       {/* Legend */}
-      <div className="absolute top-3 left-3 z-[1000] rounded-lg bg-card/90 backdrop-blur-sm border border-border p-2.5">
-        <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">24h Snowfall</p>
-        <div className="space-y-1">
+      <div className="absolute top-3 left-3 z-[1000] rounded-lg bg-card/90 backdrop-blur-sm border border-border p-4">
+        <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">24h Snowfall</p>
+        <div className="space-y-1.5">
           {legendItems.map(({ label, color }) => (
-            <div key={label} className="flex items-center gap-1.5">
+            <div key={label} className="flex items-center gap-2.5">
               <span
-                className="w-2.5 h-2.5 rounded-full shrink-0"
-                style={{ background: color, boxShadow: `0 0 4px ${color}60` }}
+                className="w-4 h-4 rounded-full shrink-0"
+                style={{ background: color, boxShadow: `0 0 6px ${color}60` }}
               />
-              <span className="text-[10px] text-muted-foreground">{label}</span>
+              <span className="text-sm text-muted-foreground">{label}</span>
             </div>
           ))}
         </div>
