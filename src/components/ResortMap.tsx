@@ -7,6 +7,7 @@ interface ResortMapProps {
   resorts: ResortMeta[];
   conditions: Map<string, LiveConditions>;
   onSelectResort: (resort: ResortMeta) => void;
+  onNavigate?: (panel: 0 | 1) => void;
 }
 
 function snowColor(inches: number): string {
@@ -43,7 +44,7 @@ function createMarkerIcon(color: string, size: number = 12) {
   });
 }
 
-export function ResortMap({ resorts, conditions, onSelectResort }: ResortMapProps) {
+export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: ResortMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<L.Map | null>(null);
 
@@ -140,6 +141,24 @@ export function ResortMap({ resorts, conditions, onSelectResort }: ResortMapProp
   return (
     <div className="relative w-full h-full">
       <div ref={mapRef} className="absolute inset-0" />
+
+      {/* Navigation tabs */}
+      {onNavigate && (
+        <div className="absolute top-3 right-3 z-[1000] flex gap-2">
+          <button
+            onClick={() => onNavigate(1)}
+            className="px-4 py-2.5 rounded-lg bg-card/90 backdrop-blur-sm border border-border text-sm font-medium text-foreground/80 hover:text-primary hover:border-primary/40 transition-colors"
+          >
+            Resorts
+          </button>
+          <button
+            onClick={() => onNavigate(0)}
+            className="px-4 py-2.5 rounded-lg bg-card/90 backdrop-blur-sm border border-border text-sm font-medium text-foreground/80 hover:text-primary hover:border-primary/40 transition-colors"
+          >
+            Trip Planner
+          </button>
+        </div>
+      )}
 
       {/* Legend */}
       <div className="absolute top-3 left-3 z-[1000] rounded-lg bg-card/90 backdrop-blur-sm border border-border p-4">
