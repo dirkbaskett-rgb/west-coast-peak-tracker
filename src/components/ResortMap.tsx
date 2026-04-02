@@ -143,7 +143,7 @@ export function ResortMap({ resorts, conditions, onSelectResort }: ResortMapProp
 
       {/* Legend */}
       <div className="absolute top-3 left-3 z-[1000] rounded-lg bg-card/90 backdrop-blur-sm border border-border p-4">
-        <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-2.5">24h Snowfall</p>
+        <p className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2.5">24h Snowfall</p>
         <div className="space-y-1.5">
           {legendItems.map(({ label, color }) => (
             <div key={label} className="flex items-center gap-2.5">
@@ -151,7 +151,7 @@ export function ResortMap({ resorts, conditions, onSelectResort }: ResortMapProp
                 className="w-4 h-4 rounded-full shrink-0"
                 style={{ background: color, boxShadow: `0 0 6px ${color}60` }}
               />
-              <span className="text-sm text-muted-foreground">{label}</span>
+              <span className="text-sm text-foreground/80">{label}</span>
             </div>
           ))}
         </div>
