@@ -3,6 +3,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { ResortMeta, LiveConditions } from "@/data/resorts";
 import { AvalancheZone, fetchAvalancheForecast, DANGER_LABELS, DANGER_COLORS } from "@/lib/avalanche";
+import { useLargeText } from "@/hooks/use-large-text";
+import { LargeTextToggle } from "@/components/LargeTextToggle";
 
 interface ResortMapProps {
   resorts: ResortMeta[];
@@ -42,7 +44,7 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
   const mapInstance = useRef<L.Map | null>(null);
   const avalancheLayerRef = useRef<L.LayerGroup | null>(null);
   const [showAvalanche, setShowAvalanche] = useState(true);
-  const [largeText, setLargeText] = useState(false);
+  const { largeText } = useLargeText();
   const [avalancheZones, setAvalancheZones] = useState<AvalancheZone[]>([]);
   const [avalancheLoading, setAvalancheLoading] = useState(false);
 
@@ -227,15 +229,7 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
 
       {/* Accessibility toggle */}
       <div className="absolute top-3 right-3 z-[1000]">
-        <button
-          onClick={() => setLargeText(!largeText)}
-          className={`px-3 py-2 rounded-lg bg-card/90 backdrop-blur-sm border border-border font-semibold transition-colors ${
-            largeText ? "text-primary border-primary/40 text-base" : "text-foreground/70 text-sm"
-          }`}
-          title="Toggle large text mode"
-        >
-          {largeText ? "Aa−" : "Aa+"}
-        </button>
+        <LargeTextToggle />
       </div>
 
       {/* Snowfall Legend */}

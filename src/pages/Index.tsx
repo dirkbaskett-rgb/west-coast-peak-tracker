@@ -7,6 +7,7 @@ import { ResortMap } from "@/components/ResortMap";
 import { PowderAlert } from "@/components/PowderAlert";
 import { useFavorites } from "@/hooks/use-favorites";
 import { Search, Snowflake, SlidersHorizontal, RefreshCw, Loader2, Map as MapIcon, List, Car } from "lucide-react";
+import { LargeTextToggle } from "@/components/LargeTextToggle";
 import heroImage from "@/assets/hero-mountains.jpg";
 import { TripPlanner } from "@/components/TripPlanner";
 
@@ -282,6 +283,11 @@ const Index = () => {
         >
           <List className="w-4 h-4" />
         </button>
+      )}
+      {activePanel !== 2 && (
+        <div className="fixed top-3 right-3 z-40">
+          <LargeTextToggle />
+        </div>
       )}
     </div>
   );
