@@ -44,7 +44,7 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
   const mapInstance = useRef<L.Map | null>(null);
   const avalancheLayerRef = useRef<L.LayerGroup | null>(null);
   const [showAvalanche, setShowAvalanche] = useState(true);
-  const [largeText, setLargeText] = useState(false);
+  const { largeText } = useLargeText();
   const [avalancheZones, setAvalancheZones] = useState<AvalancheZone[]>([]);
   const [avalancheLoading, setAvalancheLoading] = useState(false);
 
