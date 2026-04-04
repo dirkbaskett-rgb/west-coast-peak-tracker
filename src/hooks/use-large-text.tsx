@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 interface LargeTextContextType {
   largeText: boolean;
@@ -12,6 +12,11 @@ const LargeTextContext = createContext<LargeTextContextType>({
 
 export function LargeTextProvider({ children }: { children: ReactNode }) {
   const [largeText, setLargeText] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("large-text", largeText);
+  }, [largeText]);
+
   return (
     <LargeTextContext.Provider value={{ largeText, toggleLargeText: () => setLargeText((v) => !v) }}>
       {children}
