@@ -115,3 +115,11 @@
   background: hsl(220, 18%, 13%);
   border: 1px solid hsl(220, 15%, 20%);
 }
+
+/* Large text accessibility mode */
+html.large-text {
+  font-size: 137.5%; /* ~22px base instead of 16px */
+}
+html.large-text .leaflet-container {
+  font-size: 0.73rem; /* reset leaflet controls */
+}
