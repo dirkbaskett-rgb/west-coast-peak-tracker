@@ -41,7 +41,8 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<L.Map | null>(null);
   const avalancheLayerRef = useRef<L.LayerGroup | null>(null);
-  const [showAvalanche, setShowAvalanche] = useState(false);
+  const [showAvalanche, setShowAvalanche] = useState(true);
+  const [largeText, setLargeText] = useState(false);
   const [avalancheZones, setAvalancheZones] = useState<AvalancheZone[]>([]);
   const [avalancheLoading, setAvalancheLoading] = useState(false);
 
@@ -194,6 +195,14 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
     { level: 1, label: "Low", color: DANGER_COLORS[1] },
   ];
 
+  const textSize = largeText ? "text-lg" : "text-sm";
+  const headingSize = largeText ? "text-xl" : "text-sm";
+  const dotSize = largeText ? "w-6 h-6" : "w-4 h-4";
+  const checkSize = largeText ? "w-4 h-4" : "w-3 h-3";
+  const gapSize = largeText ? "gap-3" : "gap-2.5";
+  const spaceSize = largeText ? "space-y-2.5" : "space-y-1.5";
+  const padSize = largeText ? "p-5" : "p-4";
+
   return (
     <div className="relative w-full h-full">
       <div ref={mapRef} className="absolute inset-0" />
@@ -216,47 +225,60 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
         </div>
       )}
 
+      {/* Accessibility toggle */}
+      <div className="absolute top-3 right-3 z-[1000]">
+        <button
+          onClick={() => setLargeText(!largeText)}
+          className={`px-3 py-2 rounded-lg bg-card/90 backdrop-blur-sm border border-border font-semibold transition-colors ${
+            largeText ? "text-primary border-primary/40 text-base" : "text-foreground/70 text-sm"
+          }`}
+          title="Toggle large text mode"
+        >
+          {largeText ? "Aa−" : "Aa+"}
+        </button>
+      </div>
+
       {/* Snowfall Legend */}
-      <div className="absolute top-3 left-3 z-[1000] rounded-lg bg-card/90 backdrop-blur-sm border border-border p-4">
-        <p className="text-sm font-semibold text-foreground uppercase tracking-wider mb-2.5">24h Snowfall</p>
-        <div className="space-y-1.5">
+      <div className={`absolute top-3 left-3 z-[1000] rounded-lg bg-card/90 backdrop-blur-sm border border-border ${padSize}`}>
+        <p className={`${headingSize} font-semibold text-foreground uppercase tracking-wider mb-2.5`}>24h Snowfall</p>
+        <div className={spaceSize}>
           {legendItems.map(({ label, color }) => (
-            <div key={label} className="flex items-center gap-2.5">
+            <div key={label} className={`flex items-center ${gapSize}`}>
               <span
-                className="w-4 h-4 rounded-full shrink-0"
+                className={`${dotSize} rounded-full shrink-0`}
                 style={{ background: color, boxShadow: `0 0 6px ${color}60` }}
               />
-              <span className="text-sm text-foreground/80">{label}</span>
+              <span className={`${textSize} text-foreground/80`}>{label}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Avalanche toggle + legend */}
-      <div className="absolute bottom-8 left-3 z-[1000] rounded-lg bg-card/90 backdrop-blur-sm border border-border p-4">
+      <div className={`absolute bottom-8 left-3 z-[1000] rounded-lg bg-card/90 backdrop-blur-sm border border-border ${padSize}`}>
         <button
           onClick={() => setShowAvalanche(!showAvalanche)}
-          className={`flex items-center gap-2 text-sm font-semibold uppercase tracking-wider mb-1 transition-colors ${
+          className={`flex items-center gap-2 ${headingSize} font-semibold uppercase tracking-wider mb-1 transition-colors ${
             showAvalanche ? "text-destructive" : "text-foreground"
           }`}
         >
-          <span className={`w-3 h-3 rounded-sm border-2 transition-colors ${
+          <span className={`${checkSize} rounded-sm border-2 transition-colors ${
             showAvalanche ? "bg-destructive border-destructive" : "border-foreground/40"
           }`} />
           Avalanche Forecast
         </button>
         {avalancheLoading && (
-          <p className="text-xs text-muted-foreground mt-1">Loading...</p>
+          <p className={`${textSize} text-muted-foreground mt-1`}>Loading...</p>
         )}
         {showAvalanche && !avalancheLoading && (
-          <div className="space-y-1.5 mt-2">
+          <div className={`${spaceSize} mt-2`}>
             {avalancheLegend.map(({ label, color }) => (
-              <div key={label} className="flex items-center gap-2.5">
+              <div key={label} className={`flex items-center ${gapSize}`}>
                 <span
-                  className="w-4 h-4 rounded shrink-0"
+                  className={`${dotSize} rounded shrink-0`}
                   style={{ background: color, opacity: 0.7 }}
                 />
-                <span className="text-sm text-foreground/80">{label}</span>
+                <span className={`${textSize} text-foreground/80`}>{label}</span>
               </div>
             ))}
           </div>
