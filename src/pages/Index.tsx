@@ -7,6 +7,7 @@ import { ResortMap } from "@/components/ResortMap";
 import { PowderAlert } from "@/components/PowderAlert";
 import { useFavorites } from "@/hooks/use-favorites";
 import { Search, Snowflake, SlidersHorizontal, RefreshCw, Loader2, Map as MapIcon, List, Car } from "lucide-react";
+import { LargeTextToggle } from "@/components/LargeTextToggle";
 import heroImage from "@/assets/hero-mountains.jpg";
 import { TripPlanner } from "@/components/TripPlanner";
 
