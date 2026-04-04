@@ -284,8 +284,12 @@ const Index = () => {
           <List className="w-4 h-4" />
         </button>
       )}
+      {activePanel !== 2 && (
+        <div className="fixed top-3 right-3 z-40">
+          <LargeTextToggle />
+        </div>
+      )}
     </div>
-  );
 };
 
 export default Index;
