@@ -3,6 +3,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { ResortMeta, LiveConditions } from "@/data/resorts";
 import { AvalancheZone, fetchAvalancheForecast, DANGER_LABELS, DANGER_COLORS } from "@/lib/avalanche";
+import { useLargeText } from "@/hooks/use-large-text";
+import { LargeTextToggle } from "@/components/LargeTextToggle";
 
 interface ResortMapProps {
   resorts: ResortMeta[];
