@@ -127,11 +127,27 @@ const Index = () => {
             <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} />
             <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
               <div className="max-w-4xl mx-auto">
-                <div className="flex items-center gap-2 mb-1">
-                  <Snowflake className="w-5 h-5 text-primary" />
-                  <h1 className="font-display font-bold text-xl sm:text-2xl text-foreground">Mountain Collective</h1>
+                <div className="flex items-center justify-between">
+                  <button
+                    onClick={() => scrollToPanel(0)}
+                    className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Preplanned Trips
+                  </button>
+                  <div className="flex flex-col items-center">
+                    <div className="flex items-center gap-2">
+                      <Snowflake className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                      <h1 className="font-display font-bold text-2xl sm:text-3xl text-foreground">Mountain Collective Tracker</h1>
+                    </div>
+                    <p className="text-xs text-muted-foreground">26/27 Season • North America • Live Data</p>
+                  </div>
+                  <button
+                    onClick={() => scrollToPanel(2)}
+                    className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    Snow Map
+                  </button>
                 </div>
-                <p className="text-xs text-muted-foreground">26/27 Season • North America • Live Data</p>
               </div>
             </div>
           </div>
