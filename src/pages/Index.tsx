@@ -130,20 +130,20 @@ const Index = () => {
                 <div className="flex items-center justify-between">
                   <button
                     onClick={() => scrollToPanel(0)}
-                    className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm sm:text-base font-bold text-red-400 hover:text-red-300 transition-colors"
                   >
                     Preplanned Trips
                   </button>
                   <div className="flex flex-col items-center">
                     <div className="flex items-center gap-2">
-                      <Snowflake className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                      <h1 className="font-display font-bold text-2xl sm:text-3xl text-foreground">Mountain Collective Tracker</h1>
+                      <Snowflake className="w-6 h-6 sm:w-7 sm:h-7 text-primary" />
+                      <h1 className="font-display font-bold text-3xl sm:text-4xl text-foreground">Mountain Collective Tracker</h1>
                     </div>
-                    <p className="text-xs text-muted-foreground">26/27 Season • North America • Live Data</p>
+                    <p className="text-sm text-muted-foreground">26/27 Season • North America • Live Data</p>
                   </div>
                   <button
                     onClick={() => scrollToPanel(2)}
-                    className="text-xs sm:text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm sm:text-base font-bold text-red-400 hover:text-red-300 transition-colors"
                   >
                     Snow Map
                   </button>
