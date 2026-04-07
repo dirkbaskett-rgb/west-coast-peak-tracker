@@ -36,10 +36,10 @@ export function ResortCard({ resort, conditions, onClick, isFavorite, onToggleFa
             <Star className={`w-4 h-4 ${isFavorite ? "fill-primary text-primary" : "text-muted-foreground/40 hover:text-muted-foreground"}`} />
           </span>
           <div className="min-w-0">
-            <h3 className="font-display font-semibold text-foreground text-base sm:text-lg truncate">
+            <h3 className="font-display font-semibold text-card-foreground text-lg sm:text-xl truncate">
               {resort.name}
             </h3>
-            <p className="text-muted-foreground text-xs mt-0.5">
+            <p className="text-card-foreground/70 text-sm mt-0.5">
               {resort.location}, {resort.state}
             </p>
           </div>
@@ -74,18 +74,18 @@ export function ResortCard({ resort, conditions, onClick, isFavorite, onToggleFa
           )}
 
           {/* Stats grid */}
-          <div className="grid grid-cols-2 gap-2.5 text-xs">
-            <div className="flex items-center gap-1.5 text-muted-foreground">
-              <Thermometer className="w-3.5 h-3.5 text-primary/70" />
+          <div className="grid grid-cols-2 gap-2.5 text-sm">
+            <div className="flex items-center gap-1.5 text-card-foreground/80">
+              <Thermometer className="w-4 h-4 text-primary" />
               <span>{conditions.temperature != null ? `${conditions.temperature}°F` : "—"}</span>
             </div>
-            <div className="flex items-center gap-1.5 text-muted-foreground">
-              <Wind className="w-3.5 h-3.5 text-primary/70" />
+            <div className="flex items-center gap-1.5 text-card-foreground/80">
+              <Wind className="w-4 h-4 text-primary" />
               <span>{conditions.windSpeed != null ? `${conditions.windSpeed} mph` : "—"}</span>
             </div>
             {conditions.lifts && (
-              <div className="flex items-center gap-1.5 text-muted-foreground col-span-2">
-                <ArrowUpCircle className="w-3.5 h-3.5 text-primary/70" />
+              <div className="flex items-center gap-1.5 text-card-foreground/80 col-span-2">
+                <ArrowUpCircle className="w-4 h-4 text-primary" />
                 <span>{conditions.lifts.open}/{conditions.lifts.total} lifts</span>
                 <div className="flex-1 h-1 rounded-full bg-secondary ml-1">
                   <div
@@ -98,14 +98,14 @@ export function ResortCard({ resort, conditions, onClick, isFavorite, onToggleFa
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-border">
-            <div className="flex items-center gap-1.5 text-muted-foreground text-xs">
-              <Mountain className="w-3 h-3" />
+          <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-card-foreground/10">
+            <div className="flex items-center gap-1.5 text-card-foreground/70 text-sm">
+              <Mountain className="w-3.5 h-3.5" />
               <span>{resort.elevation.summit.toLocaleString()}'</span>
             </div>
-            <div className="flex items-center gap-1.5 text-xs">
-              <CloudSnow className="w-3 h-3 text-muted-foreground" />
-              <span className="text-muted-foreground">{conditions.conditions}</span>
+            <div className="flex items-center gap-1.5 text-sm">
+              <CloudSnow className="w-3.5 h-3.5 text-card-foreground/60" />
+              <span className="text-card-foreground/70">{conditions.conditions}</span>
             </div>
           </div>
         </>
