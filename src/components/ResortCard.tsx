@@ -21,7 +21,7 @@ export function ResortCard({ resort, conditions, onClick, isFavorite, onToggleFa
   return (
     <button
       onClick={() => onClick(resort)}
-      className="w-full text-left rounded-lg bg-card border border-border p-4 sm:p-5 transition-all duration-300 card-glow hover:border-primary/40 hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-ring"
+      className="w-full text-left rounded-lg bg-card border border-border p-4 sm:p-5 transition-all duration-300 shadow-md hover:shadow-lg hover:border-primary/40 hover:scale-[1.01] focus:outline-none focus:ring-2 focus:ring-ring"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-2 mb-3">
