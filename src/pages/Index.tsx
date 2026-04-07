@@ -165,19 +165,19 @@ const Index = () => {
               </button>
             </div>
             <div className="grid grid-cols-3 gap-2 sm:gap-3">
-              <div className="rounded-lg bg-card border border-border p-2.5 sm:p-3 text-center">
+              <div className="rounded-lg bg-background border border-border p-2.5 sm:p-3 text-center">
                 <p className="text-lg sm:text-xl font-display font-bold text-gradient-ice">{resorts.length}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Resorts</p>
+                <p className="text-[10px] sm:text-xs text-foreground/60">Resorts</p>
               </div>
-              <div className="rounded-lg bg-card border border-border p-2.5 sm:p-3 text-center">
+              <div className="rounded-lg bg-background border border-border p-2.5 sm:p-3 text-center">
                 <p className="text-lg sm:text-xl font-display font-bold text-gradient-ice">{snowResorts}</p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Reporting Snow</p>
+                <p className="text-[10px] sm:text-xs text-foreground/60">Reporting Snow</p>
               </div>
-              <div className="rounded-lg bg-card border border-border p-2.5 sm:p-3 text-center">
+              <div className="rounded-lg bg-background border border-border p-2.5 sm:p-3 text-center">
                 <p className="text-lg sm:text-xl font-display font-bold text-gradient-ice">
                   {Array.from(conditions.values()).filter((c) => c.lifts && c.lifts.open > 0).length}
                 </p>
-                <p className="text-[10px] sm:text-xs text-muted-foreground">Lifts Running</p>
+                <p className="text-[10px] sm:text-xs text-foreground/60">Lifts Running</p>
               </div>
             </div>
           </div>
