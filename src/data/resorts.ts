@@ -207,6 +207,18 @@ export const resorts: ResortMeta[] = [
     website: "https://www.panoramaresort.com",
   },
   {
+    id: "kicking-horse",
+    name: "Kicking Horse",
+    location: "Golden",
+    state: "BC",
+    country: "Canada",
+    lat: 51.2986,
+    lon: -117.0486,
+    elevation: { base: 3900, summit: 8033 },
+    liftieSlug: "kicking-horse",
+    website: "https://www.kickinghorseresort.com",
+  },
+  {
     id: "marmot-basin",
     name: "Marmot Basin",
     location: "Jasper",
