@@ -1,5 +1,5 @@
 import { ResortMeta, LiveConditions, groupsForResort } from "@/data/resorts";
-import { Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, CloudSnow, Star } from "lucide-react";
+import { Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, CloudSnow, Star, Ruler } from "lucide-react";
 
 interface ResortCardProps {
   resort: ResortMeta;
@@ -87,6 +87,13 @@ export function ResortCard({ resort, conditions, onClick, isFavorite, onToggleFa
 
           {/* Stats grid */}
           <div className="grid grid-cols-2 gap-2.5 text-sm">
+            <div className="col-span-2 flex items-start gap-2 text-card-foreground">
+              <Ruler className="w-4 h-4 shrink-0 mt-1 text-primary" />
+              <div>
+                <p className="font-semibold">Snow depth: {conditions.snowDepth != null ? `${conditions.snowDepth} in` : "Unavailable"}</p>
+                <p className="text-xs text-card-foreground/70">Estimated · Open-Meteo</p>
+              </div>
+            </div>
             <div className="flex items-center gap-1.5 text-card-foreground/80">
               <Thermometer className="w-4 h-4 text-primary" />
               <span>{conditions.temperature != null ? `${conditions.temperature}°F` : "—"}</span>

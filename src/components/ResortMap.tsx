@@ -154,6 +154,7 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
               <span>🌡 ${cond.temperature != null ? cond.temperature + "°F" : "—"}</span>
             </div>
             ${cond.lifts ? `<div style="font-size: 11px;">🚡 ${cond.lifts.open}/${cond.lifts.total} lifts</div>` : ""}
+            <div class="text-xs mt-1">Snow depth: ${cond.snowDepth != null ? `${cond.snowDepth} in` : "Unavailable"} (estimated)</div>
           ` : `<div style="font-size: 11px; color: hsl(215,15%,55%);">Loading...</div>`}
           <div style="font-size: 10px; margin-top: 6px; color: hsl(200,80%,55%); cursor: pointer;" class="mc-map-detail" data-id="${resort.id}">View details →</div>
         </div>

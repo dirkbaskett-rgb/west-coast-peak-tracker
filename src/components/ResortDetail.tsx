@@ -62,8 +62,10 @@ export function ResortDetail({ resort, conditions, onBack }: ResortDetailProps) 
                 <Stat icon={<Thermometer className="w-4 h-4" />} label="Temperature" value={conditions.temperature != null ? `${conditions.temperature}°F` : "N/A"} />
                 <Stat icon={<Wind className="w-4 h-4" />} label="Wind Speed" value={conditions.windSpeed != null ? `${conditions.windSpeed} mph` : "N/A"} />
                 <Stat icon={<Snowflake className="w-4 h-4" />} label="24h Snowfall" value={`${conditions.snowfall24h}"`} />
+                <Stat icon={<Ruler className="w-4 h-4" />} label="Snow Depth (estimated)" value={conditions.snowDepth != null ? `${conditions.snowDepth} in` : "Unavailable"} />
                 <Stat icon={<CloudSnow className="w-4 h-4" />} label="Conditions" value={conditions.conditions} />
               </div>
+              <p className="mt-3 text-xs text-card-foreground/70">Snow depth is an Open-Meteo model estimate at summit elevation, not an official resort snow report.</p>
             </section>
 
             {/* Snow Forecast Chart */}
