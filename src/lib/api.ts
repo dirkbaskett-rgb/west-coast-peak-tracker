@@ -50,6 +50,7 @@ type OpenMeteoResponse = {
   hourly?: {
     time?: string[];
     snowfall?: number[];
+    snow_depth?: (number | null)[];
   };
 };
 
@@ -66,7 +67,7 @@ async function fetchLiftie(slug: string): Promise<LiftieResponse | null> {
 async function fetchOpenMeteo(lat: number, lon: number, summitFt: number): Promise<OpenMeteoResponse | null> {
   try {
     const elev = feetToMeters(summitFt);
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=${elev}&current=temperature_2m,wind_speed_10m,weather_code,snowfall&hourly=snowfall&forecast_days=2&past_days=3&temperature_unit=celsius&wind_speed_unit=kmh&precipitation_unit=mm`;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&elevation=${elev}&current=temperature_2m,wind_speed_10m,weather_code,snowfall&hourly=snowfall,snow_depth&forecast_days=2&past_days=3&temperature_unit=celsius&wind_speed_unit=kmh&precipitation_unit=mm&timezone=GMT`;
     const res = await fetch(url);
     if (!res.ok) return null;
     return await res.json();
@@ -84,7 +85,7 @@ function calcSnowfall(hourly: OpenMeteoResponse["hourly"]): { snow24h: number; s
   let snow72h = 0;
 
   for (let i = 0; i < hourly.time.length; i++) {
-    const t = new Date(hourly.time[i]);
+    const t = new Date(`${hourly.time[i]}Z`);
     const hoursAgo = (now.getTime() - t.getTime()) / (1000 * 60 * 60);
     const sf = hourly.snowfall[i] || 0;
     if (hoursAgo >= 0 && hoursAgo <= 24) snow24h += sf;
@@ -97,6 +98,28 @@ function calcSnowfall(hourly: OpenMeteoResponse["hourly"]): { snow24h: number; s
     snow48h: cmToInches(snow48h),
     snow72h: cmToInches(snow72h),
   };
+}
+
+// Open-Meteo snow depth is in meters; use the latest elapsed UTC hour.
+export function currentSnowDepth(
+  hourly: OpenMeteoResponse["hourly"],
+  now = new Date(),
+): number | null {
+  if (!hourly?.time || !hourly.snow_depth) return null;
+  let latestIndex = -1;
+  let latestTime = -Infinity;
+  hourly.time.forEach((time, index) => {
+    const timestamp = new Date(`${time}Z`).getTime();
+    if (timestamp <= now.getTime() && timestamp > latestTime) {
+      latestTime = timestamp;
+      latestIndex = index;
+    }
+  });
+  if (latestIndex < 0 || now.getTime() - latestTime > 2 * 60 * 60 * 1000) return null;
+  const meters = hourly.snow_depth[latestIndex];
+  return typeof meters === "number" && Number.isFinite(meters) && meters >= 0
+    ? cmToInches(meters * 100)
+    : null;
 }
 
 export async function fetchResortConditions(resort: ResortMeta): Promise<LiveConditions> {
@@ -132,7 +155,7 @@ export async function fetchResortConditions(resort: ResortMeta): Promise<LiveCon
     snowfall24h: snow24h,
     snowfall48h: snow48h,
     snowfall72h: snow72h,
-    snowDepth: null, // no free API for snow depth
+    snowDepth: currentSnowDepth(weather?.hourly),
     conditions,
     lifts: liftie ? { open: openLifts, total: totalLifts } : null,
     liftDetails: liftie?.lifts?.status || null,
