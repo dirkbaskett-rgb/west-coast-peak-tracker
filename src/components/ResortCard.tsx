@@ -1,4 +1,4 @@
-import { ResortMeta, LiveConditions } from "@/data/resorts";
+import { ResortMeta, LiveConditions, groupsForResort } from "@/data/resorts";
 import { Snowflake, Thermometer, Wind, Mountain, ArrowUpCircle, CloudSnow, Star } from "lucide-react";
 
 interface ResortCardProps {
@@ -42,6 +42,18 @@ export function ResortCard({ resort, conditions, onClick, isFavorite, onToggleFa
             <p className="text-card-foreground/70 text-sm mt-0.5">
               {resort.location}, {resort.state}
             </p>
+            {groupsForResort(resort.id).length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-1.5">
+                {groupsForResort(resort.id).map((g) => (
+                  <span
+                    key={g.id}
+                    className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded border border-primary/25 bg-primary/10 text-primary"
+                  >
+                    {g.name}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         {conditions && (

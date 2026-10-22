@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
-import { resorts, ResortMeta, LiveConditions } from "@/data/resorts";
+import { resorts, resortGroups, ResortMeta, LiveConditions } from "@/data/resorts";
 import { fetchAllResortConditions } from "@/lib/api";
 import { ResortCard } from "@/components/ResortCard";
 import { ResortDetail } from "@/components/ResortDetail";
@@ -18,6 +18,7 @@ const Index = () => {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("snow");
   const [countryFilter, setCountryFilter] = useState<"all" | "USA" | "Canada">("all");
+  const [activeGroup, setActiveGroup] = useState<string | null>(null);
   const { favorites, toggleFavorite, isFavorite } = useFavorites();
   const [conditions, setConditions] = useState<Map<string, LiveConditions>>(new Map());
   const [loading, setLoading] = useState(true);
@@ -76,7 +77,9 @@ const Index = () => {
         r.state.toLowerCase().includes(search.toLowerCase()) ||
         r.location.toLowerCase().includes(search.toLowerCase());
       const matchCountry = countryFilter === "all" || r.country === countryFilter;
-      return matchSearch && matchCountry;
+      const group = activeGroup ? resortGroups.find((g) => g.id === activeGroup) : null;
+      const matchGroup = !group || group.resortIds.includes(r.id);
+      return matchSearch && matchCountry && matchGroup;
     });
 
     list = [...list].sort((a, b) => {
@@ -92,7 +95,12 @@ const Index = () => {
     const favs = list.filter((r) => favorites.has(r.id));
     const rest = list.filter((r) => !favorites.has(r.id));
     return [...favs, ...rest];
-  }, [search, sortBy, countryFilter, conditions, favorites]);
+  }, [search, sortBy, countryFilter, activeGroup, conditions, favorites]);
+
+  const activeGroupMeta = useMemo(
+    () => resortGroups.find((g) => g.id === activeGroup) ?? null,
+    [activeGroup],
+  );
 
   const snowResorts = Array.from(conditions.values()).filter((c) => c.snowfall24h > 0).length;
 
@@ -216,6 +224,20 @@ const Index = () => {
                 </button>
               ))}
               <div className="w-px h-4 bg-border shrink-0" />
+              {resortGroups.map((g) => (
+                <button
+                  key={g.id}
+                  onClick={() => setActiveGroup(activeGroup === g.id ? null : g.id)}
+                  className={`shrink-0 text-xs px-3 py-1.5 rounded-full border transition-colors ${
+                    activeGroup === g.id
+                      ? "bg-primary/15 border-primary/40 text-primary"
+                      : "border-border text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {g.name}
+                </button>
+              ))}
+              <div className="w-px h-4 bg-border shrink-0" />
               {([
                 { key: "snow" as const, label: "Fresh Snow" },
                 { key: "temp" as const, label: "Coldest" },
@@ -238,6 +260,20 @@ const Index = () => {
 
           {/* Resort Grid */}
           <div className="max-w-4xl mx-auto px-4 mt-4 pb-20">
+            {activeGroupMeta && (
+              <div className="mb-3 flex items-start justify-between gap-3 rounded-lg bg-card border border-border p-3">
+                <div className="min-w-0">
+                  <p className="font-display font-semibold text-card-foreground text-base sm:text-lg">{activeGroupMeta.name}</p>
+                  <p className="text-sm text-card-foreground/70">{activeGroupMeta.blurb}</p>
+                </div>
+                <button
+                  onClick={() => setActiveGroup(null)}
+                  className="shrink-0 text-xs font-semibold text-primary hover:underline"
+                >
+                  Show all
+                </button>
+              </div>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {filtered.map((resort) => (
                 <ResortCard
