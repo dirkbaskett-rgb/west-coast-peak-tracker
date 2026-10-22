@@ -61,9 +61,10 @@ export function ResortMap({ resorts, conditions, onSelectResort, onNavigate }: R
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", {
       maxZoom: 13,
       minZoom: 4,
+      attribution: "Esri, USGS, NOAA",
     }).addTo(map);
 
     avalancheLayerRef.current = L.layerGroup().addTo(map);
