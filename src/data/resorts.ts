@@ -291,3 +291,22 @@ export const resorts: ResortMeta[] = [
     website: "https://www.lemassif.com",
   },
 ];
+
+export type ResortGroup = {
+  id: string;
+  name: string;
+  blurb: string;
+  resortIds: string[];
+};
+
+export const resortGroups: ResortGroup[] = [
+  {
+    id: "canadian-rockies",
+    name: "Canadian Rockies",
+    blurb: "Kicking Horse, Panorama, Banff Sunshine & Lake Louise — all on the Trans-Canada corridor",
+    resortIds: ["kicking-horse", "panorama", "banff-sunshine", "lake-louise"],
+  },
+];
+
+export const groupsForResort = (id: string): ResortGroup[] =>
+  resortGroups.filter((g) => g.resortIds.includes(id));
